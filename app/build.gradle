@@ -1,0 +1,63 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+}
+
+android {
+    namespace 'com.perez.hector.lab13_perez'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.perez.hector.lab13_perez"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        // Habilita ViewBinding, lo que permite acceder de forma segura y eficiente a las vistas del layout desde el código Kotlin/Java sin necesidad de usar findViewById.
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.activity
+    implementation libs.androidx.constraintlayout
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    // Se agregaron dependencias de CameraX para implementar funcionalidades modernas de cámara compatibles con el ciclo de vida de la app.
+    // La variable camerax_version facilita futuras actualizaciones de la versión de CameraX.
+    // Se incluye la librería Glide para la carga y manejo eficiente de imágenes.
+    // Las dependencias de test y androidTest aseguran que el proyecto pueda ser probado correctamente.
+    // Estos cambios preparan el proyecto para trabajar con la cámara y el procesamiento de imágenes, siguiendo buenas prácticas de modularidad y mantenibilidad.
+    def camerax_version = "1.0.1"
+    // CameraX core library using camera2 implementation
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    // CameraX Lifecycle Library
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    // CameraX View class
+    implementation "androidx.camera:camera-view:1.0.0-alpha27"
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
+}
