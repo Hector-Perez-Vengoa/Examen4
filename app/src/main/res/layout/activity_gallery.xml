@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Comentarios sobre el archivo activity_gallery.xml -->
+<!-- Este layout utiliza ConstraintLayout para organizar la interfaz de la galería. -->
+<!-- Se incluye un ViewPager2 para mostrar imágenes de forma deslizante. -->
+<!-- Observación: El uso de ViewPager2 permite una navegación fluida entre imágenes. -->
+<!-- Conclusión: La estructura es adecuada para una galería de fotos y facilita la integración con adaptadores personalizados. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

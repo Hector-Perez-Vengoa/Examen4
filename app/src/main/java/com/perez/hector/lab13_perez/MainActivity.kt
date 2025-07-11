@@ -28,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private lateinit var cameraSelector: CameraSelector
     private var imageCapture: ImageCapture? = null
+    // Se declara imgCaptureExecutor para ejecutar tareas relacionadas con la captura de imágenes en un hilo separado.
+    // Observación: Usar ExecutorService mejora el rendimiento y evita bloquear el hilo principal.
+    // Conclusión: Esta implementación es adecuada para operaciones de cámara que requieren procesamiento en segundo plano.
     private lateinit var imgCaptureExecutor: ExecutorService
     private val cameraPermissionResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted ->
@@ -44,17 +47,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        imgCaptureExecutor = Executors.newSingleThreadExecutor()
+
+        // Se inicializa el binding y se establece el layout principal.
+        // Se obtiene el proveedor de la cámara y se selecciona la cámara trasera.
+        // Se inicializa imgCaptureExecutor para tareas de captura de imágenes.
+        // Se solicita el permiso de cámara al usuario.
+        // Observación: El flujo garantiza que la cámara solo se inicia si el usuario concede el permiso.
+        // Conclusión: El manejo de permisos y la inicialización de recursos están correctamente estructurados para una app de cámara.
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+        imgCaptureExecutor = Executors.newSingleThreadExecutor()
+
         cameraPermissionResult.launch(Manifest.permission.CAMERA)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
 
         binding.imgCaptureBtn.setOnClickListener {
             takePhoto()
@@ -75,6 +83,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Función startCamera: Inicializa y configura la cámara, el preview y la captura de imágenes.
+    // Observación: Se utiliza CameraX para gestionar el ciclo de vida de la cámara y vincular los casos de uso.
+    // Conclusión: Permite mostrar la vista previa y preparar la captura de fotos de manera eficiente.
     private fun startCamera() {
         val preview = Preview.Builder().build().also {
             it.setSurfaceProvider(binding.preview.surfaceProvider)
@@ -94,6 +105,9 @@ class MainActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+    // Función takePhoto: Realiza la captura de una foto y la guarda en el almacenamiento externo.
+    // Observación: Utiliza ImageCapture de CameraX y ejecuta la tarea en un hilo separado.
+    // Conclusión: Permite tomar fotos sin bloquear el hilo principal y maneja errores de captura.
     private fun takePhoto() {
         imageCapture?.let {
             val fileName = "JPEG_${System.currentTimeMillis()}"
